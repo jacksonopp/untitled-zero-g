@@ -10,3 +10,13 @@ data_*/
 
 .DS_Store
 Exports/
+
+godot-cpp/
+godot-git-plugin/
+.github/
+.gitmodules
+
+SConstruct
+build_libs.*
+build_libs_mac.*
+demo/
