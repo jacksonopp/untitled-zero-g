@@ -36,7 +36,7 @@ var input_vector := Vector2.ZERO
 
 # TODO: Remove this
 func _input(event: InputEvent) -> void:
-	if event.is_action_released("ui_accept"):
+	if event.is_action_released("temp_refuel"):
 		playerStats.FUEL_AMT = 100
 		print("refueling:", playerStats.FUEL_AMT)
 		
@@ -102,10 +102,6 @@ func calculate_input_vector() -> Vector2:
 	vector = vector.normalized()
 	
 	return vector
-
-# TODO: Remove this
-func _on_UI_toggle_gravity(enabled: bool) -> void:
-	gravity_enabled = enabled
 
 
 func _on_BoostTimer_timeout() -> void:
