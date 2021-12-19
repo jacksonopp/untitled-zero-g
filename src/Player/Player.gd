@@ -34,7 +34,12 @@ var state = State.IDLE
 var velocity := Vector2.ZERO
 var input_vector := Vector2.ZERO
 
-
+# TODO: Remove this
+func _input(event: InputEvent) -> void:
+	if event.is_action_released("ui_accept"):
+		playerStats.FUEL_AMT = 100
+		print("refueling:", playerStats.FUEL_AMT)
+		
 func _process(delta: float) -> void:
 	update()
 	
@@ -57,7 +62,7 @@ func _physics_process(delta: float) -> void:
 			elif gravity_enabled:
 				fall(delta)
 
-	if Input.is_action_pressed("jet"):
+	if Input.is_action_pressed("jet") and playerStats.FUEL_AMT > 0:
 		state = State.BOOST
 	else:
 		state = State.IDLE
@@ -66,19 +71,18 @@ func _physics_process(delta: float) -> void:
 
 func toggle_timer_state() -> void:
 	if Input.is_action_just_pressed("jet"):
-		boost_timer.start(1.0)
+		boost_timer.start(0.1)
 	if Input.is_action_just_released("jet"):
 		boost_timer.stop()
 
 func boost(delta: float) -> void:
-	if playerStats.FUEL_AMT > 0:
-		if gravity_enabled:
-			var new_vector = Vector2.ZERO
-			new_vector.x = input_vector.x * -max_speed
-			new_vector.y = input_vector.y * -max_speed + gravity
-			velocity = velocity.move_toward(new_vector, boost_speed * delta)
-		else:
-			velocity = velocity.move_toward(input_vector * -max_speed, boost_speed * delta)
+	if gravity_enabled:
+		var new_vector = Vector2.ZERO
+		new_vector.x = input_vector.x * -max_speed
+		new_vector.y = input_vector.y * -max_speed + gravity
+		velocity = velocity.move_toward(new_vector, boost_speed * delta)
+	else:
+		velocity = velocity.move_toward(input_vector * -max_speed, boost_speed * delta)
 
 func stick_to_surface(delta: float) -> void:
 	velocity = velocity.move_toward(Vector2.ZERO, collision_friction * delta)
@@ -105,6 +109,7 @@ func _on_UI_toggle_gravity(enabled: bool) -> void:
 
 
 func _on_BoostTimer_timeout() -> void:
+	var burn_rate = fuel_burn_rate / 10
 	if state == State.BOOST and playerStats.FUEL_AMT > 0:
-		playerStats.FUEL_AMT -= fuel_burn_rate
-	print(playerStats.FUEL_AMT)
+		playerStats.FUEL_AMT -= burn_rate
+	print("loosing fuel:",playerStats.FUEL_AMT)
