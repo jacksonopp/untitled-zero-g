@@ -38,3 +38,7 @@ enabled = true
 rotation = 4.71239
 scale = Vector2( 1, 0.7 )
 enabled = true
+
+[node name="BoostTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="BoostTimer" to="." method="_on_BoostTimer_timeout"]
